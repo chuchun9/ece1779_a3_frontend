@@ -19,7 +19,7 @@ def sign_in():
 
 @webapp.route('/',methods=['GET'])
 def home():
-    return render_template("index.html")
+    return redirect(url_for("main"))
 
 @webapp.route("/loggedin", methods=["GET"])
 def logged_in():
@@ -28,11 +28,13 @@ def logged_in():
     set_access_cookies(resp, access_token, max_age=30 * 60)
     return resp
 
+@webapp.route('/',methods=['GET'])
 @webapp.route("/main", methods=["GET"])
 def main():
-    print(verify_jwt_in_request(optional=True))
+    ret = verify_jwt_in_request(optional=True)
     if get_jwt_identity():
-        return render_template("main.html")
+        username = ret[1]['username']
+        return render_template("main.html", username=username)
     else:
         return redirect(aws_auth.get_sign_in_url())
 

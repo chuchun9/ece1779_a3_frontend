@@ -1,9 +1,7 @@
 from flask import Flask
 from flask_awscognito import AWSCognitoAuthentication
 from flask_jwt_extended import (
-    JWTManager,
-    set_access_cookies,
-    get_jwt_identity,
+    JWTManager
 )
 from jwt.algorithms import RSAAlgorithm
 import requests
@@ -52,4 +50,5 @@ aws_auth = AWSCognitoAuthentication(webapp)
 jwt = JWTManager(webapp)
 
 from app import main
+from app import gallery
 
