@@ -1,6 +1,41 @@
 <!DOCTYPE html>
-<html>
-    <body>
-        main
-    </body>
+<html lang="en">
+
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-2 bg-light">
+          One of three columns
+        </div>
+        <div class="col-sm-7 bg-info">
+            <div class="row">
+                <div class="col-sm">
+                    <form action="/show-image" method = "POST" enctype = "multipart/form-data">
+                        <div class="mb-3">
+                            <label for="file" class="form-label">Image: </label>
+                            <input type="file" id="file" name="file">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Show Image</button>
+                        {% if show %}
+                            <!--img src="{{ user_image }}" class="card-img-bottom" width="500" height="400"-->
+                            <img src="{{ url_for('display_image', filename=filename) }}" class="card-img-bottom" width="500" height="400">
+                        {% endif %}
+                    </form>
+                </div>
+                <div class="col-sm">
+                    <button type="submit" class="btn btn-primary">upload</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3 bg-secondary">
+          One of three columns
+        </div>
+      </div>
+    </div>
+</body>
+
 </html>
