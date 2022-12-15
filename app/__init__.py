@@ -8,6 +8,9 @@ import requests
 import json
 import os
 
+from aws_endpoints_credentials import s3_bucket_name as original_s3_bucket_name
+from .file_system import FileSystem
+
 
 def get_cognito_public_keys(region, pool_id):
     url = f"https://cognito-idp.{region}.amazonaws.com/{pool_id}/.well-known/jwks.json"
@@ -48,6 +51,9 @@ global aws_auth
 aws_auth = AWSCognitoAuthentication(webapp)
 
 jwt = JWTManager(webapp)
+
+global fs
+fs = FileSystem(original_s3_bucket_name)
 
 from app import main
 from app import gallery

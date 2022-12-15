@@ -1,5 +1,5 @@
 from flask import render_template, redirect, url_for, request, g, jsonify, make_response
-from app import webapp, aws_auth
+from app import webapp, aws_auth, fs
 from werkzeug.utils import secure_filename
 from flask_jwt_extended import (
     set_access_cookies,
@@ -61,7 +61,14 @@ def show_image():
     image.save(temp_save_file_path)
     logger.info("image saved")
 
-    return render_template("main.html", show=True, user_image = temp_save_file_path, filename=filename)
+    if request.form['action'] == "Show Image":
+        return render_template("main.html", show=True, user_image=temp_save_file_path, filename=filename)
+    elif request.form['action'] == "Upload":
+        response = fs.upload_image(temp_save_file_path)
+        if response:
+            return render_template("main.html", show=True, user_image=temp_save_file_path, filename=filename, state=1)
+        else:
+            return render_template("main.html", state=2, message="Upload Error")
 
 
 @webapp.route('/display/<filename>')
