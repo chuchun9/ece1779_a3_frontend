@@ -29,7 +29,6 @@ def logged_in():
     set_access_cookies(resp, access_token, max_age=30 * 60)
     return resp
 
-@webapp.route('/',methods=['GET'])
 @webapp.route("/main", methods=["GET"])
 def main():
     ret = verify_jwt_in_request(optional=True)
@@ -68,7 +67,7 @@ def upload():
         image_name = request.form.get('imageName')
         image_type = request.form.get('imageType')
         filter_num = request.form.get('filterNum')
-        image_name = str(filter_num) + "__" + image_name
+        image_name = username + "__" + str(filter_num) + "__" + image_name
         base64_string = base64_string.split("data:image/png;base64,")[-1]
 
         imgdata = base64.b64decode(str(base64_string))
