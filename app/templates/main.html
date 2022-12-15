@@ -31,22 +31,32 @@
       <div class="row">
         <div class="col-sm-7 bg-info">
             <div class="row">
+                <div class="card-header">
+                    <span>Select a local image</span>
+                    {% if state == 1 %}
+                        <span style="color: green; "> Success </span>
+                    {% elif state == 2 %}
+                        <span style="color: red; "> {{ message }} </span>
+                    {% endif %}
+                </div>
                 <div class="col-sm">
                     <form action="/show-image" method = "POST" enctype = "multipart/form-data">
                         <div class="mb-3">
                             <label for="file" class="form-label">Image: </label>
                             <input type="file" id="file" name="file">
                         </div>
-                        <button type="submit" class="btn btn-primary">Show Image</button>
+<!--                        <button type="submit" class="btn btn-primary">Show Image</button>-->
+                        <input type="submit" name="action" value="Show Image">
+                        <input type="submit" name="action" value="Upload">
                         {% if show %}
                             <!--img src="{{ user_image }}" class="card-img-bottom" width="500" height="400"-->
-                            <img src="{{ url_for('display_image', filename=filename) }}" class="card-img-bottom" width="500" height="400">
+                            <img src="{{ url_for('display_image', filename=filename) }}" class="card-img-bottom" width="500">
                         {% endif %}
                     </form>
                 </div>
-                <div class="col-sm">
-                    <button type="submit" class="btn btn-primary">upload</button>
-                </div>
+<!--                <div class="col-sm">-->
+<!--                    <button type="submit" class="btn btn-primary">Upload</button>-->
+<!--                </div>-->
             </div>
         </div>
       </div>
