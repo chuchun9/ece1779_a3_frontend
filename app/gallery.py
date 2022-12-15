@@ -1,12 +1,9 @@
 from flask import render_template, redirect, url_for, request, g, jsonify, make_response
 from app import webapp, aws_auth
-from werkzeug.utils import secure_filename
 from flask_jwt_extended import (
-    set_access_cookies,
     verify_jwt_in_request,
     get_jwt_identity,
 )
-import os
 import logging
 
 logger = logging.getLogger()

@@ -39,12 +39,6 @@ webapp.config["JWT_PUBLIC_KEY"] = RSAAlgorithm.from_jwk(get_cognito_public_keys(
 webapp.config['INPUT_FILE_TYPE'] = set(["rgb", "gif", "pbm", "pgm", "ppm",
                                   "tiff", "rast", "xbm", "jpeg", "jpg",
                                   "bmp", "png", "webp", "exr"])
-cwd = os.getcwd()
-last_folder = cwd.split(os.path.sep)[-1]
-if (last_folder == "app"):
-    webapp.config['UPLOAD_FOLDER'] = os.path.join(cwd, "static")
-else:
-    webapp.config['UPLOAD_FOLDER'] = os.path.join(cwd, "app", "static")
 
 global aws_auth
 

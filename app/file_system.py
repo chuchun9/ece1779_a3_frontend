@@ -39,6 +39,16 @@ class FileSystem:
             return False
         return True
 
+    def upload_inmem_image(self, inmemfile, filename, type):
+        s3_client = boto3.client('s3')
+
+        try:
+            s3_client.upload_fileobj(inmemfile, self.bucket_name, filename, ExtraArgs={'ContentType': type})
+        except botocore.exceptions.ClientError as e:
+            logging.error(e)
+            return False
+        return True
+
     def download_image(self, file_name, object_name=None):
         s3 = boto3.client('s3')
         try:

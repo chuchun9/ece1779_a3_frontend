@@ -1,14 +1,15 @@
 from flask import render_template, redirect, url_for, request, g, jsonify, make_response
 from app import webapp, aws_auth, fs
-from werkzeug.utils import secure_filename
+import base64
 from flask_jwt_extended import (
     set_access_cookies,
     verify_jwt_in_request,
     get_jwt_identity,
 )
-
-import os
+import boto3
 import logging
+import io
+from aws_endpoints_credentials import table_name
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -38,12 +39,10 @@ def main():
     else:
         return redirect(aws_auth.get_sign_in_url())
 
-@webapp.route("/show-image", methods=["POST"])
-def show_image():
-    logging.info("entered show_image function")
-    logging.info(f"upload folder: {webapp.config['UPLOAD_FOLDER']}")
+@webapp.route('/filter', methods=["POST"])
+def filter():
     image = request.files['file']
-    logger.info("image obtained")
+    selected_filter = request.form.get('filter')
 
     is_image = True
     if image.filename.split('.')[-1].lower() not in webapp.config['INPUT_FILE_TYPE']:
@@ -51,29 +50,47 @@ def show_image():
         is_image = False
 
     if len(image.filename) == 0 or (not is_image):
-        return render_template("main.html", state=2, message="Input Error")
+        return jsonify("Input Error"), 400
 
-    logger.info("image file verified")
+    return jsonify({})
 
-    filename = secure_filename(image.filename)
-    temp_save_file_path = os.path.join(webapp.config['UPLOAD_FOLDER'], filename)
-    logging.info(f"temp file path: {temp_save_file_path}")
-    image.save(temp_save_file_path)
-    logger.info("image saved")
 
-    if request.form['action'] == "Show Image":
-        return render_template("main.html", show=True, user_image=temp_save_file_path, filename=filename)
-    elif request.form['action'] == "Upload":
-        response = fs.upload_image(temp_save_file_path)
-        if response:
-            return render_template("main.html", show=True, user_image=temp_save_file_path, filename=filename, state=1)
+@webapp.route('/upload', methods=["POST"])
+def upload():
+    ret = verify_jwt_in_request(optional=True)
+    if get_jwt_identity():
+        username = ret[1]['username']
+        dynamodb = boto3.resource('dynamodb')
+
+        table = dynamodb.Table(table_name)
+
+        base64_string = request.form.get('dataurl')
+        image_name = request.form.get('imageName')
+        image_type = request.form.get('imageType')
+        filter_num = request.form.get('filterNum')
+        image_name = str(filter_num) + "__" + image_name
+        base64_string = base64_string.split("data:image/png;base64,")[-1]
+
+        imgdata = base64.b64decode(str(base64_string))
+        inmem = io.BytesIO(imgdata)
+        inmem.seek(0)
+
+        result = fs.upload_inmem_image(inmem, image_name, image_type)
+        if result:
+            response = table.put_item(
+                Item={
+                    'username': username,
+                    'imageName': image_name,
+                    'filterNum': filter_num
+                }
+            )
+            print(response)
+            if response['ResponseMetadata']['HTTPStatusCode'] != 200:
+                return jsonify("Database Failure"), 400
+
+            return jsonify("Uploading Image Success"), 200
         else:
-            return render_template("main.html", state=2, message="Upload Error")
-
-
-@webapp.route('/display/<filename>')
-def display_image(filename):
-    logging.info("entered display_image function")
-    return redirect(url_for("static", filename=filename), code=301)
-
+            return jsonify("Uploading Image Error"), 400
+    else:
+        return redirect(aws_auth.get_sign_in_url())
 
