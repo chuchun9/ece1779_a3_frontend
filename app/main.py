@@ -14,6 +14,7 @@ from aws_endpoints_credentials import table_name
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
+
 @webapp.route('/sign_in')
 def sign_in():
     return redirect(aws_auth.get_sign_in_url())
@@ -40,19 +41,23 @@ def main():
 
 @webapp.route('/filter', methods=["POST"])
 def filter():
-    image = request.files['file']
-    selected_filter = request.form.get('filter')
+    ret = verify_jwt_in_request(optional=True)
+    if get_jwt_identity():
+        username = ret[1]['username']
+        image = request.files['file']
+        selected_filter = request.form.get('filter')
 
-    is_image = True
-    if image.filename.split('.')[-1].lower() not in webapp.config['INPUT_FILE_TYPE']:
-        logging.error("Uploaded file is not of image types")
-        is_image = False
+        is_image = True
+        if image.filename.split('.')[-1].lower() not in webapp.config['INPUT_FILE_TYPE']:
+            logging.error("Uploaded file is not of image types")
+            is_image = False
 
-    if len(image.filename) == 0 or (not is_image):
-        return jsonify("Input Error"), 400
+        if len(image.filename) == 0 or (not is_image):
+            return jsonify("Input Error"), 400
 
-    return jsonify({})
-
+        return jsonify({})
+    else:
+        return redirect(aws_auth.get_sign_in_url())
 
 @webapp.route('/upload', methods=["POST"])
 def upload():
@@ -69,7 +74,6 @@ def upload():
         filter_num = request.form.get('filterNum')
         image_name = username + "__" + str(filter_num) + "__" + image_name
         base64_string = base64_string.split("data:image/png;base64,")[-1]
-
         imgdata = base64.b64decode(str(base64_string))
         inmem = io.BytesIO(imgdata)
         inmem.seek(0)

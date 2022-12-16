@@ -2,7 +2,7 @@ import logging
 import boto3
 import botocore
 import os
-
+import io
 
 class FileSystem:
     @classmethod
@@ -57,3 +57,13 @@ class FileSystem:
             logging.error(e)
             return False
         return True
+
+    def download_image_obj(self, path):
+        file = io.BytesIO()
+        s3 = boto3.client('s3')
+        try:
+            s3.download_fileobj(self.bucket_name, path, file)
+        except botocore.exceptions.ClientError as e:
+            logging.error(e)
+            return False
+        return file

@@ -3,7 +3,8 @@
         "app_function": "app.webapp",
         "aws_region": "us-east-1",
         "profile_name": "default",
-        "project_name": "flask-zappa",
-        "runtime": "python3.8"
+        "project_name": "ece1779-a3-frontend",
+        "runtime": "python3.8",
+        "s3_bucket": "ece1779-a3-frontend-zappa"
     }
 }

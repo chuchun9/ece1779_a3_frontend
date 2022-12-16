@@ -6,8 +6,6 @@ from flask_jwt_extended import (
 from jwt.algorithms import RSAAlgorithm
 import requests
 import json
-import os
-
 from aws_endpoints_credentials import s3_bucket_name as original_s3_bucket_name
 from .file_system import FileSystem
 
@@ -24,6 +22,7 @@ webapp.config['AWS_DEFAULT_REGION'] = 'us-east-1'
 webapp.config['AWS_COGNITO_DOMAIN'] = 'https://ece1779.auth.us-east-1.amazoncognito.com'
 webapp.config['AWS_COGNITO_USER_POOL_ID'] = 'us-east-1_vZDoM58z5'
 webapp.config['AWS_COGNITO_USER_POOL_CLIENT_ID'] = '77v7ofpsqe8idt2m406517n8br'
+# webapp.config['AWS_COGNITO_REDIRECT_URL'] = 'https://libd03kewf.execute-api.us-east-1.amazonaws.com/dev/loggedin'
 webapp.config['AWS_COGNITO_REDIRECT_URL'] = 'http://localhost:3000/loggedin'
 webapp.config['AWS_COGNITO_USER_POOL_CLIENT_SECRET'] = None
 webapp.config['SECRET_KEY'] = 'secret key'
