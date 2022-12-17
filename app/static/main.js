@@ -36,7 +36,7 @@ function sendFilterRequest(input) {
         $("#displayed_img").attr("hidden", true)
         $("#spinner").attr("hidden", false)
         $.ajax({
-            url: '/filter',
+            url: '/dev/filter',
             data: formData,
             type: 'POST',
             success: function(response) {
@@ -72,7 +72,7 @@ function uploadDisplayedImage(input) {
         formData.append('imageType', $('#displayed_img').attr('imageType'))
         formData.append('filterNum', $('#displayed_img').attr('filterNum'))
         $.ajax({
-            url: '/upload',
+            url: '/dev/upload',
             data: formData,
             type: 'POST',
             success: function(response) {
