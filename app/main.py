@@ -41,6 +41,28 @@ def main():
     else:
         return redirect(aws_auth.get_sign_in_url())
 
+
+@webapp.route('/api-filter', methods=['POST'])
+def api_filter():
+    image = request.files['file']
+    image_type = image.headers.get('Content-Type').split("/")[-1]
+    selected_filter = request.form.get('filterNum')
+    image_io = io.BytesIO()
+    image.save(image_io)
+    image_base64 = base64.b64encode(image_io.getvalue())
+    data = {
+        'filterNum': selected_filter,
+        'image': image_base64.decode('utf-8'),
+        'imageType': image_type
+    }
+    json_data = json.dumps(data)
+    obj = json.loads(json_data)
+    response = requests.post(webapp.config['BACKEND_URL'] + '/Filter', json=obj)
+    newbase64 = response.json()['img']
+    dataurl = "data:{};base64,{}".format(image.headers.get('Content-Type'), newbase64)
+    return dataurl
+
+
 @webapp.route('/filter', methods=["POST"])
 def filter():
     ret = verify_jwt_in_request(optional=True)
