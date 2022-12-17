@@ -33,16 +33,20 @@ function sendFilterRequest(input) {
         const formData = new FormData();
         formData.append('file', myFile[0]);
         formData.append('filter', selected_filter);
+        $("#displayed_img").attr("hidden", true)
+        $("#spinner").attr("hidden", false)
         $.ajax({
             url: '/filter',
             data: formData,
             type: 'POST',
             success: function(response) {
-                $("#Message").attr("hidden", true);
+                $("#Message").attr("hidden",false);
+                $("#Message").text("Filter Success");
+                $("#Message").css({"color": "green"});
+                $("#spinner").attr("hidden", true)
                 $("#displayed_img").attr("filterNum", selected_filter);
-
-                console.log($('#displayed_img').attr('imageName'));
-                console.log($('#displayed_img').attr('filterNum'));
+                $("#displayed_img").attr("src", response)
+                $("#displayed_img").attr("hidden", false)
             },
             error: function(error) {
                 console.log(error);
@@ -73,7 +77,7 @@ function uploadDisplayedImage(input) {
             type: 'POST',
             success: function(response) {
                 $("#Message").attr("hidden",false);
-                $("#Message").text("Success");
+                $("#Message").text("Upload Success");
                 $("#Message").css({"color": "green"});
             },
             error: function(error) {

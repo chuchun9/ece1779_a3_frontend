@@ -22,7 +22,7 @@ webapp.config['AWS_DEFAULT_REGION'] = 'us-east-1'
 webapp.config['AWS_COGNITO_DOMAIN'] = 'https://ece1779.auth.us-east-1.amazoncognito.com'
 webapp.config['AWS_COGNITO_USER_POOL_ID'] = 'us-east-1_vZDoM58z5'
 webapp.config['AWS_COGNITO_USER_POOL_CLIENT_ID'] = '77v7ofpsqe8idt2m406517n8br'
-# webapp.config['AWS_COGNITO_REDIRECT_URL'] = 'https://libd03kewf.execute-api.us-east-1.amazonaws.com/dev/loggedin'
+# webapp.config['AWS_COGNITO_REDIRECT_URL'] = 'https://9j392u7dc6.execute-api.us-east-1.amazonaws.com/dev/loggedin'
 webapp.config['AWS_COGNITO_REDIRECT_URL'] = 'http://localhost:3000/loggedin'
 webapp.config['AWS_COGNITO_USER_POOL_CLIENT_SECRET'] = None
 webapp.config['SECRET_KEY'] = 'secret key'
@@ -38,6 +38,8 @@ webapp.config["JWT_PUBLIC_KEY"] = RSAAlgorithm.from_jwk(get_cognito_public_keys(
 webapp.config['INPUT_FILE_TYPE'] = set(["rgb", "gif", "pbm", "pgm", "ppm",
                                   "tiff", "rast", "xbm", "jpeg", "jpg",
                                   "bmp", "png", "webp", "exr"])
+
+webapp.config['BACKEND_URL'] = "https://tt6u4o6zcj.execute-api.us-east-1.amazonaws.com/test"
 
 global aws_auth
 

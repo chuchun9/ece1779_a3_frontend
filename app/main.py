@@ -9,7 +9,9 @@ from flask_jwt_extended import (
 import boto3
 import logging
 import io
+import requests
 from aws_endpoints_credentials import table_name
+import json
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -45,6 +47,7 @@ def filter():
     if get_jwt_identity():
         username = ret[1]['username']
         image = request.files['file']
+        image_type = image.headers.get('Content-Type').split("/")[-1]
         selected_filter = request.form.get('filter')
 
         is_image = True
@@ -54,8 +57,24 @@ def filter():
 
         if len(image.filename) == 0 or (not is_image):
             return jsonify("Input Error"), 400
+        image_io = io.BytesIO()
+        image.save(image_io)
+        image_base64 = base64.b64encode(image_io.getvalue())
+        data = {
+            'filterNum': selected_filter,
+            'image': image_base64.decode('utf-8'),
+            'imageType': image_type
+        }
+        json_data = json.dumps(data)
+        obj = json.loads(json_data)
 
-        return jsonify({})
+        response = requests.post(webapp.config['BACKEND_URL'] + '/Filter', json=obj)
+        if response.status_code != 200:
+            return jsonify("Filter Image Error"), 400
+
+        newbase64 = response.json()['img']
+        dataurl = "data:{};base64,{}".format(image.headers.get('Content-Type'), newbase64)
+        return jsonify(dataurl), 200
     else:
         return redirect(aws_auth.get_sign_in_url())
 
