@@ -23,7 +23,7 @@ def gallery():
         table = dynamodb.Table(table_name)
 
         ## should be -1
-        filter_num = 0
+        filter_num = -1
         response = table.query(
             KeyConditionExpression=Key('username').eq(username),
             FilterExpression=Attr('filterNum').eq(str(filter_num))
