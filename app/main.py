@@ -57,7 +57,7 @@ def api_filter():
     }
     json_data = json.dumps(data)
     obj = json.loads(json_data)
-    response = requests.post(webapp.config['BACKEND_URL'] + '/Filter', json=obj)
+    response = requests.post(webapp.config['BACKEND_URL'], json=obj)
     newbase64 = response.json()['img']
     dataurl = "data:{};base64,{}".format(image.headers.get('Content-Type'), newbase64)
     return dataurl
@@ -90,7 +90,7 @@ def filter():
         json_data = json.dumps(data)
         obj = json.loads(json_data)
 
-        response = requests.post(webapp.config['BACKEND_URL'] + '/Filter', json=obj)
+        response = requests.post(webapp.config['BACKEND_URL'], json=obj)
         if response.status_code != 200:
             return jsonify("Filter Image Error"), 400
 

@@ -39,7 +39,7 @@ webapp.config['INPUT_FILE_TYPE'] = set(["rgb", "gif", "pbm", "pgm", "ppm",
                                   "tiff", "rast", "xbm", "jpeg", "jpg",
                                   "bmp", "png", "webp", "exr"])
 
-webapp.config['BACKEND_URL'] = "https://tt6u4o6zcj.execute-api.us-east-1.amazonaws.com/test"
+webapp.config['BACKEND_URL'] = "https://tt6u4o6zcj.execute-api.us-east-1.amazonaws.com/test/Filter"
 
 global aws_auth
 
