@@ -114,7 +114,7 @@ def upload():
         image_type = request.form.get('imageType')
         filter_num = request.form.get('filterNum')
         image_name = username + "__" + str(filter_num) + "__" + image_name
-        base64_string = base64_string.split("data:image/png;base64,")[-1]
+        base64_string = base64_string.split(f"data:{image_type};base64,")[-1]
         imgdata = base64.b64decode(str(base64_string))
         inmem = io.BytesIO(imgdata)
         inmem.seek(0)
